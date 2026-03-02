@@ -34,14 +34,17 @@ async function searchPapers(query: string, limit: number = 5) {
 }
 
 export const searchAcademicPapers = tool({
-  description: "Search for academic papers and research articles from Semantic Scholar database. Use this when users ask about academic literature, research papers, or want to find relevant studies.",
+  description: "Search for academic papers in Molecular Dynamics, computational chemistry, and biophysics. Use this when users ask about MD simulations, force fields, protein-ligand binding, or any computational chemistry topics.",
   inputSchema: z.object({
-    query: z.string().describe("Search query (e.g., 'machine learning transformers', 'quantum computing entanglement')"),
+    query: z.string().describe("Search query (e.g., 'molecular dynamics protein folding', 'GROMACS GPU acceleration', 'free energy calculation MM-PBSA')"),
     limit: z.number().optional().describe("Number of results to return, default is 5"),
   }),
   needsApproval: false,
   execute: async (input) => {
-    const result = await searchPapers(input.query, input.limit || 5);
+    const enhancedQuery = input.query.includes("molecular") || input.query.includes("MD") || input.query.includes("GROMACS") || input.query.includes("LAMMPS") 
+      ? input.query 
+      : `${input.query} molecular dynamics computational chemistry`;
+    const result = await searchPapers(enhancedQuery, input.limit || 5);
     return result;
   },
 });
