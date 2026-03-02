@@ -21,6 +21,7 @@ import { MessageActions } from "./message-actions";
 import { MessageEditor } from "./message-editor";
 import { MessageReasoning } from "./message-reasoning";
 import { PreviewAttachment } from "./preview-attachment";
+import { AcademicSearch } from "./academic-search";
 import { Weather } from "./weather";
 
 const PurePreviewMessage = ({
@@ -259,6 +260,34 @@ const PurePreviewMessage = ({
                   </Tool>
                 </div>
               );
+            }
+
+            if (type === "tool-searchAcademicPapers") {
+              const { toolCallId, state, input, output } = part;
+              const widthClass = "w-[min(100%,450px)]";
+
+              if (state === "output-available" && output) {
+                return (
+                  <div className={widthClass} key={toolCallId}>
+                    <AcademicSearch searchResult={output as any} />
+                  </div>
+                );
+              }
+
+              if (state === "input-available" || state === "approval-requested") {
+                return (
+                  <div className={widthClass} key={toolCallId}>
+                    <Tool className="w-full" defaultOpen={true}>
+                      <ToolHeader state={state} type="tool-searchAcademicPapers" />
+                      <ToolContent>
+                        <ToolInput input={input} />
+                      </ToolContent>
+                    </Tool>
+                  </div>
+                );
+              }
+
+              return null;
             }
 
             if (type === "tool-createDocument") {
